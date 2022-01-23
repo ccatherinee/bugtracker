@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+{% block title %}
+    Create Project 
+{% endblock %}
+
+{% block content %}
+    <div class="create issue">
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h1>Create Project - BugTraCCer</h1>
+        <form action="createproject/">
+            <input type="submit" value="Create a project" />
+        </form>
+    </div>
+
+    <label for="projects">Choose a project:</label>
+    <select name="projects" id="projects" onchange="location = this.value;">
+        {% for project in projects %}
+        <option value= "{% url 'project' project.id %}">{{ project.name }}</option>
+        {% endfor %}
+        <option value="" selected disabled hidden>Select project</option>
+    </select>
+{% endblock %}
+</body>
+</html>

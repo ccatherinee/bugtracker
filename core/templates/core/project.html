@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        {{ project.id }}
+    </title>
+</head>
+<body>
+
+    {% for bug, creator in creators %}
+    <li><a href="{% url 'issue' bug.id %}">{{bug}}</a>, {{creator}}</li>
+    {% endfor %}
+    
+
+    <form action="/createissue/">
+        <input type="submit" value="Create Issue">
+    </form>
+
+</body>
+</html>
+

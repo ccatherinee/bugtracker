@@ -2,6 +2,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model 
+
+from .models import Issue, Project
 
 class CustomUserCreationForm(forms.Form):
     username = forms.CharField(label='Enter Username', min_length=4, max_length=150)
@@ -43,4 +46,57 @@ class CustomUserCreationForm(forms.Form):
             password=self.cleaned_data['password1']
         )
         return user
+
+class IssueForm(forms.Form):
+
+    User =  get_user_model()
+    users = User.objects.values()
+    # ids = User.objects.values_list('id', flat=True)
+    usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
+
+    
+    assignee = forms.ChoiceField(choices=usernames)
+    
+    bug = forms.CharField(max_length=500)
+    due_date = forms.DateTimeField(label='date due')
+
+    def __init__(self, curr_user, project_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        User =  get_user_model()
+        users = User.objects.values()
+        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
+
+        self.fields['assignee'] = forms.ChoiceField(choices=usernames)
+        # self.fields['creator'].queryset = curr_user
+        self.curr_user = curr_user
+        self.project_id = project_id
+
+    def save(self, commit=True):
+        issue = Issue.objects.create(
+            creator_id=self.curr_user,
+            project_id=self.project_id,
+            bug=self.cleaned_data['bug'], 
+            due_date=self.cleaned_data['due_date'], 
+        )
+        issue.assignee.add(self.cleaned_data['assignee']) 
+        return issue
+
+class ProjectForm(forms.Form):
+
+    name = forms.CharField(max_length=60)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        User = get_user_model()
+        users = User.objects.values()
+        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
+
+        self.fields['workers'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames)
+
+    def save(self, commit=True):
+        project = Project.objects.create(
+            name=self.cleaned_data['name']
+        )
+        [project.workers.add(worker) for worker in self.cleaned_data['workers']]
+        return project
 
