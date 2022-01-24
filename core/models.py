@@ -15,7 +15,6 @@ class Project(models.Model):
     workers = models.ManyToManyField(User)
     name = models.CharField(max_length=60)
 
-
 class Issue(models.Model):
     
     creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name="creator")
@@ -28,11 +27,19 @@ class Issue(models.Model):
     
     project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.CASCADE)
     
-    def resolve(self):
-        self.resolved = True
-    
     def __str__(self):
         return self.bug  
+
+class Comment(models.Model):
+
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='comments')
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poster')
+    body = models.CharField(max_length=1000)
+    posted = models.DateTimeField(default=timezone.now())
+
+    def __str__(self):
+        return self.body
+
 
 class Person(models.Model): 
     user = models.OneToOneField(User, on_delete=models.CASCADE)

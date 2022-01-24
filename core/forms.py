@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model 
 
-from .models import Issue, Project
+from .models import Issue, Project, Comment
 
 class CustomUserCreationForm(forms.Form):
     username = forms.CharField(label='Enter Username', min_length=4, max_length=150)
@@ -54,9 +54,6 @@ class IssueForm(forms.Form):
     # ids = User.objects.values_list('id', flat=True)
     usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
 
-    
-    assignee = forms.ChoiceField(choices=usernames)
-    
     bug = forms.CharField(max_length=500)
     due_date = forms.DateTimeField(label='date due')
 
@@ -64,10 +61,9 @@ class IssueForm(forms.Form):
         super().__init__(*args, **kwargs)
         User =  get_user_model()
         users = User.objects.values()
-        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
+        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users if user['id'] != 1]
 
-        self.fields['assignee'] = forms.ChoiceField(choices=usernames)
-        # self.fields['creator'].queryset = curr_user
+        self.fields['assignee'] = forms.MultipleChoiceField(choices=usernames)
         self.curr_user = curr_user
         self.project_id = project_id
 
@@ -78,7 +74,8 @@ class IssueForm(forms.Form):
             bug=self.cleaned_data['bug'], 
             due_date=self.cleaned_data['due_date'], 
         )
-        issue.assignee.add(self.cleaned_data['assignee']) 
+        # issue.assignee.add(self.cleaned_data['assignee']) 
+        [issue.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
         return issue
 
 class ProjectForm(forms.Form):
@@ -89,7 +86,7 @@ class ProjectForm(forms.Form):
         super().__init__(*args, **kwargs)
         User = get_user_model()
         users = User.objects.values()
-        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
+        usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users if user['id'] != 1]
 
         self.fields['workers'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames)
 
@@ -100,3 +97,47 @@ class ProjectForm(forms.Form):
         [project.workers.add(worker) for worker in self.cleaned_data['workers']]
         return project
 
+class UpdateIssueForm(forms.Form):
+
+    def __init__(self, issue_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # add people: display all users not currently on issue
+        self.issue = Issue.objects.get(id=issue_id)
+        assigned_users = self.issue.assignee.all()
+        all_users = set(User.objects.all())
+        users = list(all_users.difference(assigned_users))
+        usernames = [(user.id, user.first_name + " " + user.last_name) for user in users if user.id != 1]
+
+        self.fields['assignee'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames, required=False)
+        
+        # change bug
+        self.fields['bug'] = forms.CharField(max_length=500, required=False)
+
+        # resolve 
+        self.fields['resolved'] = forms.BooleanField(label='resolved', required=False)
+
+    def save(self, commit=True):
+        if len(self.cleaned_data['bug']) != 0:
+            self.issue.bug=self.cleaned_data['bug']
+        if not self.fields['resolved']:
+            self.issue.resolved=False
+        else:
+            self.issue.resolved=True
+        [self.issue.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
+        self.issue.save()
+
+class CommentForm(forms.Form):
+    #body = forms.CharField(max_length=1000)
+    def __init__(self, curr_user, issue_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.curr_user = curr_user
+        self.issue_id = issue_id
+        self.fields['add a comment'] = forms.CharField(max_length=1000)
+
+    def save(self, commit=True):
+        comment = Comment.objects.create(
+            poster_id=self.curr_user,
+            issue_id=self.issue_id,
+            body=self.cleaned_data['add a comment']
+        )
+        return comment

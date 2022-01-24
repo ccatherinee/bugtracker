@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm, IssueForm, ProjectForm
+from .forms import CustomUserCreationForm, IssueForm, ProjectForm, UpdateIssueForm, CommentForm
 from django.contrib import messages
 from django.contrib.auth import get_user_model 
 from django.http import HttpResponse
 
-from .models import Project, Issue
+from .models import Project, Issue, Comment
 from django.contrib.auth.models import User 
 
 # Create your views here.
@@ -54,18 +54,63 @@ def createProject(request):
                 return redirect('base')
         else:
             f = ProjectForm() 
+    else:
+        return redirect('accounts/login')
     return render(request, 'core/createproject.html', {'form': f})
 
 def project(request, project_id):
+    request.session['project'] = project_id
     bugs = Issue.objects.filter(project_id=project_id)
+
+    if request.GET.get('created by me') == 'created by me':
+        bugs = Issue.objects.filter(project_id=project_id).filter(creator_id=request.user.id)
+
+    if request.GET.get('unresolved') == 'unresolved':
+        bugs = Issue.objects.filter(project_id=project_id).filter(resolved=False)
+    
+    if request.GET.get('resolved') == 'resolved':
+        bugs = Issue.objects.filter(project_id=project_id).filter(resolved=True)
+
     creators = []
     for bug in bugs:
         user = User.objects.get(pk=bug.creator_id)
         creator = user.first_name + " " + user.last_name
         creators.append((bug, creator))
-    request.session['project'] = project_id
+
+
     return render(request, 'core/project.html', {'bugs': bugs, 'creators': creators})
 
 def issue(request, issue_id):
-    bug = Issue.objects.get(id=issue_id)
-    return render(request, 'core/issue.html', {'bug': bug})
+    project_id = request.session['project']
+    current_user = request.user.id
+
+    comments = Comment.objects.filter(issue_id=issue_id)
+
+    posters = []
+    for comment in comments:
+        user = User.objects.get(pk=comment.poster_id)
+        poster = user.first_name + " " + user.last_name
+        posters.append((comment, poster))
+
+    if request.method == 'POST':
+        if "Update" in request.POST:
+            f = UpdateIssueForm(issue_id, request.POST)
+            if f.is_valid():
+                f.save()
+                messages.success(request, 'Issue updated successfully')
+                return redirect('/%s/' % project_id)
+        else:
+            f = UpdateIssueForm(issue_id)
+        if "Comment" in request.POST:
+            g = CommentForm(current_user, issue_id, request.POST)
+            if g.is_valid():
+                g.save()
+                return redirect('/%s/details/' % issue_id)
+        else:
+            g = CommentForm(current_user, issue_id)
+    else: 
+        f = UpdateIssueForm(issue_id)
+        g = CommentForm(current_user, issue_id)
+
+    return render(request, 'core/issue.html', {'form': f, 'form2': g, 'comments': comments, 'posters': posters})
+
