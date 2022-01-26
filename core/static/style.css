@@ -1,0 +1,12 @@
+input.submit {
+    width: 15em; height: 5em;
+}
+
+.button {
+    font-size: 30pt;
+}
+
+select {
+    height: 200px;
+}
+

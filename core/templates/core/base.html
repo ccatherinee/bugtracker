@@ -1,14 +1,25 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
+<link
+rel="stylesheet"
+type="text/css"
+href="{% static 'core/css/bootstrap.css' %}"
+/>
 <html>
-  <head>
-    <title>Welcome!</title>
-    <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
-  </head>
-<body>
+    <head>
+        <title>Welcome!</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+        <style>
+            select {
+                -webkit-appearance: none;
+                height:100px;
+            }
+        </style>
+    </head>
 
+<body>
 {% block content %}
-    <div class="create issue">
+    <div class="col-xs-1" align="center">
         {% if messages %}
             <ul>
                 {% for message in messages %}
@@ -17,19 +28,28 @@
             </ul>
         {% endif %}
 
-        <h1>Create Project - BugTraCCer</h1>
+        <h1 class="display-1 text-primary">BugTraCCer <small class="text-muted">Choose your project</small></h1>
+    </div>
+
+    <div>
+        <img src="static/caterpillar2.png" height=100px style = "position:relative; top:75px; left:300px;">
+    </div>
+
+    <div class="col-xs-1" align="center" style = "position:relative; top:75px;">
         <form action="createproject/">
-            <input type="submit" value="Create a project" />
+            <input type="submit" value="Create a project" style="font-family: Courier New" class="submit button"/>
         </form>
     </div>
 
-    <label for="projects">Choose a project:</label>
-    <select name="projects" id="projects" onchange="location = this.value;">
-        {% for project in projects %}
-        <option value= "{% url 'project' project.id %}">{{ project.name }}</option>
-        {% endfor %}
-        <option value="" selected disabled hidden>Select project</option>
-    </select>
+    <div class="col-xs-1 button" align="center" style = "position:relative; top:150px; font-family: Courier New">
+        <label for="projects">Choose from<br>existing project:</label>
+        <select name="projects" onchange="location = this.value;" style="position:relative; top:-30px;">
+            {% for project in projects %}
+            <option value= "{% url 'project' project.id %}">{{ project.name }}</option>
+            {% endfor %}
+            <option value="" selected disabled hidden>Select project</option>
+        </select>
+    </div>
 {% endblock %}
 </body>
 </html>
