@@ -40,9 +40,17 @@ def createIssue(request):
 
 def base(request):
     if request.user.is_authenticated:
-        return render(request, 'core/base.html', {'projects': Project.objects.values()})
+        return render(request, 'core/base.html')
     else:
         return redirect('accounts/login')
+
+def projects(request):
+    if request.user.is_authenticated:
+        return render(request, 'core/projects.html', {'projects': Project.objects.values()})
+
+def manage_users(request, project_id):
+    if request.user.is_authenticated:
+        return render(request, 'core/manage_users.html', {'project': Project.objects.get(pk=project_id)})
 
 def createProject(request):
     if request.user.is_authenticated:
@@ -71,14 +79,21 @@ def project(request, project_id):
     if request.GET.get('resolved') == 'resolved':
         bugs = Issue.objects.filter(project_id=project_id).filter(resolved=True)
 
-    creators = []
+    information = []
     for bug in bugs:
         user = User.objects.get(pk=bug.creator_id)
         creator = user.first_name + " " + user.last_name
-        creators.append((bug, creator))
+        assignees = ""
+        for assignee in bug.assignee.all():
+            user = User.objects.get(pk=assignee.id)
+            assignees = user.first_name + " " + user.last_name + ", " + assignees
+        resolved = bug.resolved
+        created = bug.pub_date
+        due = bug.due_date
+        information.append((bug, assignees[:-2], creator, resolved, created, due))
 
 
-    return render(request, 'core/project.html', {'bugs': bugs, 'creators': creators})
+    return render(request, 'core/project.html', {'bugs': bugs, 'information': information})
 
 def issue(request, issue_id):
     project_id = request.session['project']

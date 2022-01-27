@@ -42,5 +42,6 @@ class Comment(models.Model):
 
 
 class Person(models.Model): 
+    description = models.CharField(max_length=500)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

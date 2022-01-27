@@ -81,6 +81,7 @@ class IssueForm(forms.Form):
 class ProjectForm(forms.Form):
 
     name = forms.CharField(max_length=60)
+    description = forms.CharField(max_length=500)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,7 +93,8 @@ class ProjectForm(forms.Form):
 
     def save(self, commit=True):
         project = Project.objects.create(
-            name=self.cleaned_data['name']
+            name=self.cleaned_data['name'],
+            description=self.cleaned_data['description']
         )
         [project.workers.add(worker) for worker in self.cleaned_data['workers']]
         return project
