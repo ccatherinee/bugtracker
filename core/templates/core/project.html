@@ -49,27 +49,64 @@ href="{% static 'core/css/bootstrap.css' %}"
     </div>
 
     <div class="content">
-        <table class="table table-striped">
+        <h5 class="sub-header" style="text-align:center">Project Details</h2>
+
+        <table class="table">
             <tr>
-                <th>description</th>
-                <th>assignee</th>
-                <th>reporter</th>
-                <th>resolved</th>
-                <th>created</th>
-                <th>due</th>
+                <th>Project Name</th>
+                <th>Project Description</th>
             </tr>
-            {% for bug, assignees, creator, resolved, created, due in information %}
             <tr>
-                <td><a href="{% url 'issue' bug.id %}">{{bug}}</a></td>
-                <td>{{ assignees }}</td>
-                <td>{{ creator }}</td>
-                <td>{{ resolved }}</td>
-                <td>{{ created }}</td>
-                <td>{{ due }}</td>
+                
             </tr>
-            {% endfor %}
         </table>
-    
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="sub-header">Issues</h2>
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <tr>
+                            <th>description</th>
+                            <th>assignee</th>
+                            <th>creator</th>
+                            <th>resolved</th>
+                            <th>created</th>
+                            <th>due</th>
+                        </tr>
+                        {% for bug, assignees, creator, resolved, created, due in information %}
+                        <tr>
+                            <td><a href="{% url 'issue' bug.id %}">{{bug}}</a></td>
+                            <td>{{ assignees }}</td>
+                            <td>{{ creator }}</td>
+                            <td>{{ resolved }}</td>
+                            <td>{{ created }}</td>
+                            <td>{{ due }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h5 class="sub-header">Workers on this project</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                        {% for worker in workers %}
+                        <tr>
+                            <td>{{ worker }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     
 

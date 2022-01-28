@@ -92,8 +92,15 @@ def project(request, project_id):
         due = bug.due_date
         information.append((bug, assignees[:-2], creator, resolved, created, due))
 
+    project = Project.objects.get(pk=project_id)
 
-    return render(request, 'core/project.html', {'bugs': bugs, 'information': information})
+    workers = []
+    for worker in project.workers.all():
+        user = User.objects.get(pk=worker.id)
+        workers.append(user.first_name + " " + user.last_name)
+
+
+    return render(request, 'core/project.html', {'bugs': bugs, 'information': information, 'workers': workers, 'project': project})
 
 def issue(request, issue_id):
     project_id = request.session['project']
