@@ -24,30 +24,30 @@ href="{% static 'core/css/bootstrap.css' %}"
     </div>
 
     
-    <div class="navbar">
-        <form action="/createissue/">
-          <input type="submit" value="Create Issue" class="text-primary">
-        </form>
-          
-        <div class="dropdown">
-      <button class="dropbtn">Dropdown
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-content">
-            <form method='get' action='#'>
-              <input type="submit" value="created by me" name="created by me" class="text-primary"/>
+        <div class="navbar">
+            <form action="/createissue/">
+            <input type="submit" value="Create Issue" class="text-primary">
             </form>
             
-            <form method='get' action='#'>
-              <input type="submit" value="unresolved" name="unresolved" class="text-primary"/>
-            </form>
-            
-            <form method='get' action='#'>
-              <input type="submit" value="resolved" name="resolved" class="text-primary"/>
-            </form>  
-          </div>
-        </div>
-      </div> 
+            <div class="dropdown">
+        <button class="dropbtn">Dropdown
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+                <form method='get' action='#'>
+                <input type="submit" value="created by me" name="created by me" class="text-primary"/>
+                </form>
+                
+                <form method='get' action='#'>
+                <input type="submit" value="unresolved" name="unresolved" class="text-primary"/>
+                </form>
+                
+                <form method='get' action='#'>
+                <input type="submit" value="resolved" name="resolved" class="text-primary"/>
+                </form>  
+            </div>
+            </div>
+        </div> 
   
 
     <div class="content">
