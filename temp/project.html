@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load static %}
+<link
+rel="stylesheet"
+type="text/css"
+href="{% static 'core/css/bootstrap.css' %}"
+/>
+<html>
+  <head>
+    <title>Project</title>
+    <link rel="stylesheet" type="text/css" href="../../static/style.css">
+    <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
+  </head>
+
+
+<body>
+
+    <div class="sidebar">
+        <a class="active" href="#home">Dashboard Home</a>
+        <a href="#">Manage Role Assignment</a>
+        <a href="{% url 'projects' %}">My Projects</a>
+        <a href="#">My Tickets</a>
+        <a href="#">User Profile</a>
+    </div>
+
+
+    <div class="navbar">
+      <form action="/createissue/">
+        <input type="submit" value="Create Issue" class="text-primary">
+      </form>
+        
+      <div class="dropdown">
+	<button class="dropbtn">Dropdown
+	  <i class="fa fa-caret-down"></i>
+	</button>
+	<div class="dropdown-content">
+          <form method='get' action='#'>
+            <input type="submit" value="created by me" name="created by me" class="text-primary"/>
+          </form>
+          
+          <form method='get' action='#'>
+            <input type="submit" value="unresolved" name="unresolved" class="text-primary"/>
+          </form>
+          
+          <form method='get' action='#'>
+            <input type="submit" value="resolved" name="resolved" class="text-primary"/>
+          </form>  
+        </div>
+      </div>
+    </div> 
+
+    <!--
+    <div class="topnav">
+        <div class="topnav-right">
+            
+            <div class="dropdown">
+                <button class="dropbtn">Filters</button>
+                
+            </div>
+        </div>
+    </div>
+    -->
+
+    <div class="content">
+        <table class="table table-striped">
+            <tr>
+                <th>description</th>
+                <th>assignee</th>
+                <th>reporter</th>
+                <th>resolved</th>
+                <th>created</th>
+                <th>due</th>
+            </tr>
+            {% for bug, assignees, creator, resolved, created, due in information %}
+            <tr>
+                <td><a href="{% url 'issue' bug.id %}">{{bug}}</a></td>
+                <td>{{ assignees }}</td>
+                <td>{{ creator }}</td>
+                <td>{{ resolved }}</td>
+                <td>{{ created }}</td>
+                <td>{{ due }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    
+    </div>
+    
+
+</body>
+</html>
+
