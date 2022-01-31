@@ -9,7 +9,7 @@ href="{% static 'core/css/bootstrap.css' %}"
 
 <head>
     <title>Welcome!</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/core/static/style.css">
     <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -25,11 +25,9 @@ href="{% static 'core/css/bootstrap.css' %}"
         <a href="#">User Profile</a>
     </div>
 
-    <div class="topnav">
-        <div class="topnav-right">
-            <a href="{% url 'createProject' %}">Create</a>
-            <a href="#">About</a>
-        </div>
+    <div class="navbar-c">
+        <a href="{% url 'createProject' %}">Create</a>
+        <a href="#">About</a>
     </div>
       
     <div class="content">
@@ -47,7 +45,6 @@ href="{% static 'core/css/bootstrap.css' %}"
             {% endfor %}
         </table>
 
-        <table class
     </div>
 </body>
 

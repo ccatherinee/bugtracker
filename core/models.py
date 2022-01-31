@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 
 class Project(models.Model):
     workers = models.ManyToManyField(User)
+    description = models.CharField(max_length=500)
     name = models.CharField(max_length=60)
 
 class Issue(models.Model):

@@ -4,11 +4,11 @@
 rel="stylesheet"
 type="text/css"
 href="{% static 'core/css/bootstrap.css' %}"
-/>
+/> 
 <html>
   <head>
     <title>Project</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/core/static/style.css">
     <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
   </head>
 
@@ -24,16 +24,16 @@ href="{% static 'core/css/bootstrap.css' %}"
     </div>
 
     
-        <div class="navbar">
-            <form action="/createissue/">
-            <input type="submit" value="Create Issue" class="text-primary">
-            </form>
-            
-            <div class="dropdown">
-        <button class="dropbtn">Dropdown
+    <div class="navbar-c">
+        <form action="/createissue/">
+        <input type="submit" value="Create Issue" class="text-primary">
+        </form>
+        
+        <div class="dropdown-c">
+            <button class="dropbtn">Dropdown
             <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content">
+            </button>
+            <div class="dropdown-content">
                 <form method='get' action='#'>
                 <input type="submit" value="created by me" name="created by me" class="text-primary"/>
                 </form>
@@ -46,9 +46,9 @@ href="{% static 'core/css/bootstrap.css' %}"
                 <input type="submit" value="resolved" name="resolved" class="text-primary"/>
                 </form>  
             </div>
-            </div>
-        </div> 
-  
+        </div>
+    </div> 
+
 
     <div class="content">
         <h5 class="sub-header" style="text-align:center">Project Details</h2>

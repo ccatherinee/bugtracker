@@ -35,7 +35,8 @@
     margin-left: 200px;
     padding: 1px 16px;
     height: 1000px;
-  }
+    text-align:center;
+  } 
   
   /* On screens that are less than 700px wide, make the sidebar into a topbar */
   @media screen and (max-width: 700px) {
@@ -62,7 +63,7 @@
   }
 
   /* Navbar container */
-.navbar {
+.navbar-c {
     -webkit-appearance:none;
     overflow: hidden;
     background-color: #333;
@@ -70,7 +71,7 @@
   }
   
   /* Links inside the navbar */
-  .navbar form {
+  .navbar-c form {
     float: right;
     font-size: 16px;
     color: white;
@@ -78,23 +79,23 @@
     padding: 14px 16px;
     text-decoration: none;
   }
-  .navbar a {
+  .navbar-c a {
     float: right;
-    font-size: 16px;
+    font-size: 19px;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 14px 19px;
     text-decoration: none;
   }
   
   /* The dropdown container */
-  .dropdown {
+  .dropdown-c {
     float: right;
     overflow: hidden;
   }
   
   /* Dropdown button */
-  .dropdown .dropbtn {
+  .dropdown-c .dropbtn {
     font-size: 16px;
     border: none;
     outline: none;
@@ -106,7 +107,7 @@
   }
   
   /* Add a red background color to navbar links on hover */
-  .navbar a:hover, .dropdown:hover .dropbtn {
+  .navbar-c a:hover, .dropdown-c:hover .dropbtn {
     background-color: red;
   }
   
@@ -129,14 +130,48 @@
     display: block;
     text-align: left;
   }
+
+  .dropdown-content form {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
   
   /* Add a grey background color to dropdown links on hover */
   .dropdown-content a:hover {
     background-color: #ddd;
   }
-  
+  .dropdown-content form:hover {
+    background-color: #ddd;
+  }
+
   /* Show the dropdown menu on hover */
-  .dropdown:hover .dropdown-content {
+  .dropdown-c:hover .dropdown-content {
     display: block;
   } 
+
+
   
+input[type=submit]{
+    background: none;
+    border: none;
+    outline: none;
+    color: white;
+    cursor: pointer;
+} 
+
+/* div .center {
+  -webkit-appearance:none;
+  display: inline-block;
+  text-align:center;
+  outline: dashed 1px black;
+  position: relative;
+} */
+
+/*form {
+  display: inline-block;
+  text-align: left;
+}*/
