@@ -36,6 +36,7 @@
     padding: 1px 16px;
     height: 1000px;
     text-align:center;
+    margin-top: 50px;
   } 
   
   /* On screens that are less than 700px wide, make the sidebar into a topbar */
@@ -154,24 +155,39 @@
   } 
 
 
-  
-input[type=submit]{
-    background: none;
-    border: none;
-    outline: none;
-    color: white;
-    cursor: pointer;
-} 
 
-/* div .center {
+
+input[type=text]{
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+div .center {
   -webkit-appearance:none;
   display: inline-block;
   text-align:center;
   outline: dashed 1px black;
   position: relative;
-} */
+  padding: 30px;
+} 
 
-/*form {
+form {
   display: inline-block;
   text-align: left;
-}*/
+}
+
+.margin {
+  margin-top: 80px
+}
+
+.margin1 {
+  margin-top: 50px
+}
+
+.submit-c {
+  border: black;
+  outline: black;
+  color: darkgreen;
+  cursor: pointer;
+  font-size: 30px;;
+}

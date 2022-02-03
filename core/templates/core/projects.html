@@ -18,10 +18,10 @@ href="{% static 'core/css/bootstrap.css' %}"
 <body>
 
     <div class="sidebar">
-        <a class="active" href="#home">Dashboard Home</a>
+        <a href="{% url 'base' %}">Dashboard Home</a>
         <a href="#">Manage Role Assignment</a>
-        <a href="{% url 'projects' %}">My Projects</a>
-        <a href="#">My Tickets</a>
+        <a class="active" href="{% url 'projects' %}">My Projects</a>
+        <a href="{% url 'myissues' %}">My Issues</a>
         <a href="#">User Profile</a>
     </div>
 

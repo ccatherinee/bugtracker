@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm, IssueForm, ProjectForm, UpdateIssueForm, CommentForm
+from .forms import CustomUserCreationForm, IssueForm, ProjectForm, UpdateIssueForm, CommentForm, UpdateWorkersForm
 from django.contrib import messages
-from django.contrib.auth import get_user_model 
+from django.contrib.auth import get_user_model, logout
 from django.http import HttpResponse
 
 from .models import Project, Issue, Comment
@@ -24,25 +24,31 @@ def register(request):
     
     return render(request, 'core/register.html', {'form': f})
 
-def createIssue(request):
-    current_user = request.user.id
-    project_id = request.session['project']
-    if request.method == 'POST':
-        f = IssueForm(current_user, project_id, request.POST)
-        if f.is_valid():
-            f.save()
-            messages.success(request, 'Issue created successfully')
-            return redirect('/%s/' % project_id)
-    else: 
-        f = IssueForm(current_user, project_id)
-    
-    return render(request, 'core/createissue.html', {'form': f})
+def logout_view(request):
+    logout(request)
+    return redirect('/accounts/login')
 
+def createIssue(request):
+    if request.user.is_authenticated:
+        current_user = request.user.id
+        project_id = request.session['project']
+        if request.method == 'POST':
+            f = IssueForm(current_user, project_id, request.POST)
+            if f.is_valid():
+                f.save()
+                messages.success(request, 'Issue created successfully')
+                return redirect('/%s/' % project_id)
+        else: 
+            f = IssueForm(current_user, project_id)
+        
+        return render(request, 'core/createissue.html', {'form': f})
+    else: 
+        return redirect('/accounts/login')
 def base(request):
     if request.user.is_authenticated:
         return render(request, 'core/base.html')
     else:
-        return redirect('accounts/login')
+        return redirect('/accounts/login')
 
 def projects(request):
     if request.user.is_authenticated:
@@ -63,7 +69,7 @@ def createProject(request):
         else:
             f = ProjectForm() 
     else:
-        return redirect('accounts/login')
+        return redirect('/accounts/login')
     return render(request, 'core/createproject.html', {'form': f})
 
 def project(request, project_id):
@@ -78,6 +84,14 @@ def project(request, project_id):
     
     if request.GET.get('resolved') == 'resolved':
         bugs = Issue.objects.filter(project_id=project_id).filter(resolved=True)
+
+    if request.method == 'POST':
+        f = UpdateWorkersForm(project_id, request.POST)
+        if f.is_valid():
+            f.save()
+            return redirect('/%s/' % project_id)
+    else:
+        f = UpdateWorkersForm(project_id) 
 
     information = []
     for bug in bugs:
@@ -100,7 +114,7 @@ def project(request, project_id):
         workers.append(user.first_name + " " + user.last_name)
 
 
-    return render(request, 'core/project.html', {'bugs': bugs, 'information': information, 'workers': workers, 'project': project})
+    return render(request, 'core/project.html', {'bugs': bugs, 'information': information, 'workers': workers, 'project': project, 'form': f})
 
 def issue(request, issue_id):
     project_id = request.session['project']
@@ -135,4 +149,35 @@ def issue(request, issue_id):
         g = CommentForm(current_user, issue_id)
 
     return render(request, 'core/issue.html', {'form': f, 'form2': g, 'comments': comments, 'posters': posters})
+
+
+def myissues(request):
+    curr_user = request.user.id
+
+    bugs = Issue.objects.filter(creator_id=curr_user)
+
+    if request.GET.get('created by me') == 'created by me':
+        bugs = Issue.objects.filter(creator_id=curr_user)
+
+    if request.GET.get('unresolved') == 'unresolved':
+        bugs = Issue.objects.filter(creator_id=curr_user).filter(resolved=False)
+    
+    if request.GET.get('resolved') == 'resolved':
+        bugs = Issue.objects.filter(creator_id=curr_user).filter(resolved=True)
+
+    information = []
+    for bug in bugs:
+        user = User.objects.get(pk=bug.creator_id)
+        creator = user.first_name + " " + user.last_name
+        assignees = ""
+        for assignee in bug.assignee.all():
+            user = User.objects.get(pk=assignee.id)
+            assignees = user.first_name + " " + user.last_name + ", " + assignees
+        resolved = bug.resolved
+        created = bug.pub_date
+        due = bug.due_date
+        project = Project.objects.get(pk=bug.project_id)
+        information.append((bug, project, assignees[:-2], creator, resolved, created, due))
+
+    return render(request, 'core/myissues.html', {'information': information})
 

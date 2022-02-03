@@ -16,6 +16,9 @@ class Project(models.Model):
     description = models.CharField(max_length=500)
     name = models.CharField(max_length=60)
 
+    def __str__(self):
+        return self.name
+
 class Issue(models.Model):
     
     creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name="creator")
@@ -46,3 +49,11 @@ class Person(models.Model):
     description = models.CharField(max_length=500)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+class IssueHistory(models.Model):
+    assignee = models.ManyToManyField(User, related_name="updatedassignee", blank=True, null=True)
+    bug = models.CharField(max_length=500, blank=True, null=True)
+    resolved = models.BooleanField(default=False)
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name='issue')
+    date = models.DateTimeField(default=timezone.now())
+

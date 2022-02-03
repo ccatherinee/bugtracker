@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model 
 
-from .models import Issue, Project, Comment
+from .models import Issue, Project, Comment, IssueHistory
 
 class CustomUserCreationForm(forms.Form):
     username = forms.CharField(label='Enter Username', min_length=4, max_length=150)
@@ -76,6 +76,12 @@ class IssueForm(forms.Form):
         )
         # issue.assignee.add(self.cleaned_data['assignee']) 
         [issue.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
+
+        history = IssueHistory.objects.create(
+            bug=self.cleaned_data['bug'],
+            issue_id=issue.id,
+        )
+        [history.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
         return issue
 
 class ProjectForm(forms.Form):
@@ -121,12 +127,35 @@ class UpdateIssueForm(forms.Form):
     def save(self, commit=True):
         if len(self.cleaned_data['bug']) != 0:
             self.issue.bug=self.cleaned_data['bug']
-        if not self.fields['resolved']:
+        if not self.cleaned_data['resolved']:
             self.issue.resolved=False
         else:
             self.issue.resolved=True
         [self.issue.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
         self.issue.save()
+
+        history = IssueHistory.objects.create(
+            bug=self.cleaned_data['bug'],
+            issue_id=self.issue.id,
+            resolved=self.issue.resolved,
+        )
+        [history.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
+
+class UpdateWorkersForm(forms.Form):
+    def __init__(self, project_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # add people: display all users not currently on issue
+        self.project = Project.objects.get(id=project_id)
+        assigned_users = self.project.workers.all()
+        all_users = set(User.objects.all())
+        users = list(all_users.difference(assigned_users))
+        usernames = [(user.id, user.first_name + " " + user.last_name) for user in users if user.id != 1]
+
+        self.fields['workers'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames, required=False)
+    
+    def save(self, commit=True):
+        [self.project.workers.add(worker) for worker in self.cleaned_data['workers']]
+        self.project.save()
 
 class CommentForm(forms.Form):
     #body = forms.CharField(max_length=1000)
