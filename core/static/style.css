@@ -14,7 +14,7 @@
   .sidebar a {
     display: block;
     color: black;
-    padding: 16px;
+    padding: 13.2px;
     text-decoration: none;
   }
   
@@ -36,7 +36,7 @@
     padding: 1px 16px;
     height: 1000px;
     text-align:center;
-    margin-top: 50px;
+    margin-top: 30px;
   } 
   
   /* On screens that are less than 700px wide, make the sidebar into a topbar */
@@ -74,15 +74,16 @@
   /* Links inside the navbar */
   .navbar-c form {
     float: right;
-    font-size: 16px;
+    font-size: 15px;
     color: white;
     text-align: center;
-    padding: 14px 16px;
     text-decoration: none;
+    padding-top: 12.5px;
+    padding-bottom: 11px;
   }
   .navbar-c a {
     float: right;
-    font-size: 19px;
+    font-size: 15px;
     color: white;
     text-align: center;
     padding: 14px 19px;
@@ -97,7 +98,7 @@
   
   /* Dropdown button */
   .dropdown-c .dropbtn {
-    font-size: 16px;
+    font-size: 15px;
     border: none;
     outline: none;
     color: white;
@@ -108,7 +109,7 @@
   }
   
   /* Add a red background color to navbar links on hover */
-  .navbar-c a:hover, .dropdown-c:hover .dropbtn {
+  .navbar-c a:hover, .navbar-c form:hover, .dropdown-c:hover .dropbtn {
     background-color: red;
   }
   
@@ -171,6 +172,15 @@ div .center {
   padding: 30px;
 } 
 
+div .outline {
+  outline: dashed 1px black;
+  padding: 50px;
+  margin-top: 50px;
+}
+
+.spacing {
+  margin-top: 30px;
+}
 form {
   display: inline-block;
   text-align: left;
@@ -184,10 +194,49 @@ form {
   margin-top: 50px
 }
 
-.submit-c {
-  border: black;
-  outline: black;
-  color: darkgreen;
+.dropdown-d {
+  background: none;
+  border: none;
+  outline: none;
+  color: blue;
   cursor: pointer;
-  font-size: 30px;;
+  font-size: 15px;
+} 
+
+.createissue {
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.h {
+  margin-bottom: 30px;
+}
+
+select {
+  margin-left: 15px;
+}
+
+#id1 {
+  margin-left: 15px;
+}
+
+#parent {
+  position: relative;
+  width: 500px;
+  height: 100px;
+}
+
+#child1 {
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+}
+
+#child2 {
+  position: absolute;
+  left: 0;
 }

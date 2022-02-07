@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
 from django.http import HttpResponse
 
-from .models import Project, Issue, Comment
+from .models import Project, Issue, Comment, IssueHistory
 from django.contrib.auth.models import User 
 
 # Create your views here.
@@ -119,6 +119,19 @@ def project(request, project_id):
 def issue(request, issue_id):
     project_id = request.session['project']
     current_user = request.user.id
+    bug = Issue.objects.get(id=issue_id)
+
+    history_information = []
+    histories = IssueHistory.objects.filter(issue_id=issue_id)
+    for history in histories:
+        issue = history.bug
+        resolved = history.resolved
+        assignees = ""
+        for assignee in history.assignee.all():
+            user = User.objects.get(pk=assignee.id)
+            assignees = user.first_name + " " + user.last_name + ", " + assignees
+        date = history.date
+        history_information.append((issue, resolved, assignees[:-2], date))
 
     comments = Comment.objects.filter(issue_id=issue_id)
 
@@ -134,7 +147,7 @@ def issue(request, issue_id):
             if f.is_valid():
                 f.save()
                 messages.success(request, 'Issue updated successfully')
-                return redirect('/%s/' % project_id)
+                return redirect('/%s/details' % issue_id)
         else:
             f = UpdateIssueForm(issue_id)
         if "Comment" in request.POST:
@@ -148,7 +161,19 @@ def issue(request, issue_id):
         f = UpdateIssueForm(issue_id)
         g = CommentForm(current_user, issue_id)
 
-    return render(request, 'core/issue.html', {'form': f, 'form2': g, 'comments': comments, 'posters': posters})
+    information = []
+    user = User.objects.get(pk=bug.creator_id)
+    creator = user.first_name + " " + user.last_name
+    assignees = ""
+    for assignee in bug.assignee.all():
+        user = User.objects.get(pk=assignee.id)
+        assignees = user.first_name + " " + user.last_name + ", " + assignees
+    resolved = bug.resolved
+    created = bug.pub_date
+    due = bug.due_date
+    information.append((bug, assignees[:-2], creator, resolved, created, due))
+
+    return render(request, 'core/issue.html', {'form': f, 'form2': g, 'comments': comments, 'posters': posters, 'information': information, 'history_information': history_information})
 
 
 def myissues(request):

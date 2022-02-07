@@ -19,19 +19,17 @@ href="{% static 'core/css/bootstrap.css' %}"
 
     <div class="sidebar">
         <a href="{% url 'base' %}">Dashboard Home</a>
-        <a href="#">Manage Role Assignment</a>
         <a class="active" href="{% url 'projects' %}">My Projects</a>
         <a href="{% url 'myissues' %}">My Issues</a>
-        <a href="#">User Profile</a>
     </div>
 
     <div class="navbar-c">
-        <a href="{% url 'createProject' %}">Create</a>
-        <a href="#">About</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'createProject' %}">Create Project</a>
     </div>
       
     <div class="content">
-
+        <h5 class="h" style="text-align:center">My Projects</h5>
         <table class="table table-striped" >
             <tr>
                 <th>Project Name</th>

@@ -10,15 +10,6 @@ href="{% static 'core/css/bootstrap.css' %}"
     <title>Project</title>
     <link rel="stylesheet" type="text/css" href="/core/static/style.css">
     <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
-    <style>
-        input[type=submit]{
-            background: none;
-            border: none;
-            outline: none;
-            color: blue;
-            cursor: pointer;
-        } 
-    </style>
   </head>
 
 
@@ -26,16 +17,14 @@ href="{% static 'core/css/bootstrap.css' %}"
 
     <div class="sidebar">
         <a href="{% url 'base' %}">Dashboard Home</a>
-        <a href="#">Manage Role Assignment</a>
         <a href="{% url 'projects' %}">My Projects</a>
         <a class="active" href="{% url 'myissues' %}">My Issues</a>
-        <a href="#">User Profile</a>
     </div>
 
     
     <div class="navbar-c">
         <form action="/createissue/">
-        <input type="submit" value="Create Issue" class="text-primary">
+        <input type="submit" value="Create Issue" class="createissue">
         </form>
         
         <div class="dropdown-c">
@@ -44,15 +33,15 @@ href="{% static 'core/css/bootstrap.css' %}"
             </button>
             <div class="dropdown-content">
                 <form method='get' action='#'>
-                <input type="submit" value="created by me" name="created by me" class="text-primary"/>
+                <input type="submit" value="created by me" name="created by me" class="text-primary dropdown-d"/>
                 </form>
                 
                 <form method='get' action='#'>
-                <input type="submit" value="unresolved" name="unresolved" class="text-primary"/>
+                <input type="submit" value="unresolved" name="unresolved" class="text-primary dropdown-d"/>
                 </form>
                 
                 <form method='get' action='#'>
-                <input type="submit" value="resolved" name="resolved" class="text-primary"/>
+                <input type="submit" value="resolved" name="resolved" class="text-primary dropdown-d"/>
                 </form>  
             </div>
         </div>
@@ -60,7 +49,7 @@ href="{% static 'core/css/bootstrap.css' %}"
 
 
     <div class="content">
-        <h5 class="sub-header" style="text-align:center">My Issues</h2>
+        <h5 class="h" style="text-align:center">My Issues</h5>
 
             <table class="table table-striped">
                 <tr>

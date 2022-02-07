@@ -54,31 +54,30 @@ class IssueForm(forms.Form):
     # ids = User.objects.values_list('id', flat=True)
     usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users]
 
-    bug = forms.CharField(max_length=500)
-    due_date = forms.DateTimeField(label='date due')
-
     def __init__(self, curr_user, project_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
         User =  get_user_model()
         users = User.objects.values()
         usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users if user['id'] != 1]
 
+        self.fields['Bug description'] = forms.CharField(max_length=500)
         self.fields['assignee'] = forms.MultipleChoiceField(choices=usernames)
         self.curr_user = curr_user
         self.project_id = project_id
+        self.fields['due_date'] = forms.DateTimeField(label='Date due')
 
     def save(self, commit=True):
         issue = Issue.objects.create(
             creator_id=self.curr_user,
             project_id=self.project_id,
-            bug=self.cleaned_data['bug'], 
+            bug=self.cleaned_data['Bug description'], 
             due_date=self.cleaned_data['due_date'], 
         )
         # issue.assignee.add(self.cleaned_data['assignee']) 
         [issue.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
 
         history = IssueHistory.objects.create(
-            bug=self.cleaned_data['bug'],
+            bug=self.cleaned_data['Bug description'],
             issue_id=issue.id,
         )
         [history.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
@@ -86,8 +85,7 @@ class IssueForm(forms.Form):
 
 class ProjectForm(forms.Form):
 
-    name = forms.CharField(max_length=60)
-    description = forms.CharField(max_length=500)
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,14 +93,16 @@ class ProjectForm(forms.Form):
         users = User.objects.values()
         usernames = [(user['id'], user['first_name'] + " " + user['last_name']) for user in users if user['id'] != 1]
 
-        self.fields['workers'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames)
+        self.fields['Name'] = forms.CharField(max_length=60)
+        self.fields['Workers'] = forms.MultipleChoiceField(choices=usernames)
+        self.fields['Description'] = forms.CharField(max_length=500)
 
     def save(self, commit=True):
         project = Project.objects.create(
-            name=self.cleaned_data['name'],
-            description=self.cleaned_data['description']
+            name=self.cleaned_data['Name'],
+            description=self.cleaned_data['Description']
         )
-        [project.workers.add(worker) for worker in self.cleaned_data['workers']]
+        [project.workers.add(worker) for worker in self.cleaned_data['Workers']]
         return project
 
 class UpdateIssueForm(forms.Form):
@@ -135,11 +135,11 @@ class UpdateIssueForm(forms.Form):
         self.issue.save()
 
         history = IssueHistory.objects.create(
-            bug=self.cleaned_data['bug'],
+            bug=self.issue.bug,
             issue_id=self.issue.id,
             resolved=self.issue.resolved,
         )
-        [history.assignee.add(assignee) for assignee in self.cleaned_data['assignee']]
+        [history.assignee.add(assignee) for assignee in self.issue.assignee.all()]
 
 class UpdateWorkersForm(forms.Form):
     def __init__(self, project_id, *args, **kwargs):
@@ -151,10 +151,15 @@ class UpdateWorkersForm(forms.Form):
         users = list(all_users.difference(assigned_users))
         usernames = [(user.id, user.first_name + " " + user.last_name) for user in users if user.id != 1]
 
-        self.fields['workers'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=usernames, required=False)
+
+        if len(usernames) != 0:
+            self.fields['Add workers to project'] = forms.MultipleChoiceField(choices=usernames, required=False)
+        else:
+            self.default_msg = "default"
+
     
     def save(self, commit=True):
-        [self.project.workers.add(worker) for worker in self.cleaned_data['workers']]
+        [self.project.workers.add(worker) for worker in self.cleaned_data['Add workers to project']]
         self.project.save()
 
 class CommentForm(forms.Form):
@@ -163,12 +168,12 @@ class CommentForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.curr_user = curr_user
         self.issue_id = issue_id
-        self.fields['add a comment'] = forms.CharField(max_length=1000)
+        self.fields['Add a comment'] = forms.CharField(max_length=1000)
 
     def save(self, commit=True):
         comment = Comment.objects.create(
             poster_id=self.curr_user,
             issue_id=self.issue_id,
-            body=self.cleaned_data['add a comment']
+            body=self.cleaned_data['Add a comment']
         )
         return comment

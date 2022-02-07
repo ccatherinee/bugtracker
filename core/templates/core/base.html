@@ -16,17 +16,14 @@ href="{% static 'core/css/bootstrap.css' %}"
     <body>
 
         <div class="sidebar">
-          <a class="active" href="#home">Dashboard Home</a>
-          <a href="#">Manage Role Assignment</a>
+          <a class="active" href="{% url 'base' %}">Dashboard Home</a>
           <a href="{% url 'projects' %}">My Projects</a>
           <a href="{% url 'myissues' %}">My Issues</a>
-          <a href="#">User Profile</a>
         </div>
 
 
         <div class="navbar-c">
-            <a href="{% url 'logout' %}">logout</a>
-            <a href="#">User</a>
+            <a href="{% url 'logout' %}">Logout</a>
             </div>
         </div>
         

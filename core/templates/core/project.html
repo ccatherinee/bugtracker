@@ -10,15 +10,6 @@ href="{% static 'core/css/bootstrap.css' %}"
     <title>Project</title>
     <link rel="stylesheet" type="text/css" href="/core/static/style.css">
     <link rel="icon" type="image/png" href="{% static 'caterpillar.png' %}">
-    <style>
-        input[type=submit]{
-            background: none;
-            border: none;
-            outline: none;
-            color: blue;
-            cursor: pointer;
-        } 
-    </style>
   </head>
 
 
@@ -26,17 +17,17 @@ href="{% static 'core/css/bootstrap.css' %}"
 
     <div class="sidebar">
         <a href="{% url 'base' %}">Dashboard Home</a>
-        <a href="#">Manage Role Assignment</a>
         <a href="{% url 'projects' %}">My Projects</a>
         <a href="{% url 'myissues' %}">My Issues</a>
-        <a href="#">User Profile</a>
     </div>
 
     
     <div class="navbar-c">
+        <a href="{% url 'logout' %}">Logout</a>
+
         <form action="/createissue/">
-        <input type="submit" value="Create Issue" class="text-primary">
-        </form>
+        <input type="submit" value="Create Issue" class="createissue">
+        </form> 
         
         <div class="dropdown-c">
             <button class="dropbtn">Filter Issues
@@ -44,23 +35,24 @@ href="{% static 'core/css/bootstrap.css' %}"
             </button>
             <div class="dropdown-content">
                 <form method='get' action='#'>
-                <input type="submit" value="created by me" name="created by me" class="text-primary"/>
+                <input type="submit" value="created by me" name="created by me" class="text-primary dropdown-d"/>
                 </form>
                 
                 <form method='get' action='#'>
-                <input type="submit" value="unresolved" name="unresolved" class="text-primary"/>
+                <input type="submit" value="unresolved" name="unresolved" class="text-primary dropdown-d"/>
                 </form>
                 
                 <form method='get' action='#'>
-                <input type="submit" value="resolved" name="resolved" class="text-primary"/>
+                <input type="submit" value="resolved" name="resolved" class="text-primary dropdown-d"/>
                 </form>  
             </div>
         </div>
+
     </div> 
 
 
     <div class="content">
-        <h5 class="sub-header" style="text-align:center">Project Details</h2>
+        <h5 class="h" style="text-align:center">Project Details</h5>
 
         <table class="table">
             <tr>
@@ -76,17 +68,17 @@ href="{% static 'core/css/bootstrap.css' %}"
 
         <div class="row">
             <div class="col-md-6">
-                <h5 class="sub-header">Issues</h2>
+                <h5 class="h">Issues</h5>
                 <div class="table-responsive">
 
                     <table class="table table-striped">
                         <tr>
-                            <th>description</th>
-                            <th>assignee</th>
-                            <th>creator</th>
-                            <th>resolved</th>
-                            <th>created</th>
-                            <th>due</th>
+                            <th>Bug Description</th>
+                            <th>Assignee(s)</th>
+                            <th>Creator</th>
+                            <th>Resolved</th>
+                            <th>Created</th>
+                            <th>Due</th>
                         </tr>
                         {% for bug, assignees, creator, resolved, created, due in information %}
                         <tr>
@@ -103,12 +95,11 @@ href="{% static 'core/css/bootstrap.css' %}"
             </div>
 
             <div class="col-md-6">
-                <h5 class="sub-header">Workers on this project</h2>
+                <h5 class="h">Workers on this project</h5>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <tr>
                             <th>Name</th>
-                            <th>Role</th>
                         </tr>
                         {% for worker in workers %}
                         <tr>
@@ -117,18 +108,21 @@ href="{% static 'core/css/bootstrap.css' %}"
                         {% endfor %}
                     </table>
                 </div>
-
                 
-                <form method="post">
-                    {% csrf_token %}
-                    <table>
-                        {{ form.as_table}}
-                        <tr>
-                            <td></td>
-                            <td><input type="submit" name="Update" value="Update" /></td>
-                        </tr>
-                    </table>
-                </form>
+                {% if form.default_msg != "default" %}
+                <div class="outline">
+                    <form method="post">
+                        {% csrf_token %}
+                        <table>
+                            {{ form.as_table}}
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" name="Update" value="Update" id="id1" class="spacing"/></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
