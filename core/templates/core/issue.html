@@ -70,7 +70,7 @@ href="{% static 'core/css/bootstrap.css' %}"
                         {% endfor %}
                     </table>
                 </div>
-                <div class="center">
+                <div class="center" id="update-issue">
                     <h5>Update Issue</h5>
                     <form method="post">
                         {% csrf_token %}
@@ -96,7 +96,7 @@ href="{% static 'core/css/bootstrap.css' %}"
                     </table>
                     <input type="submit" name="Comment" value="Comment" id="child1"/> 
                 </form>
-                <div class="table-responsive">
+                <div class="table-responsive" id="comment-table">
                     <table class="table table-striped">
                         <tr>
                             <th>Poster</th>

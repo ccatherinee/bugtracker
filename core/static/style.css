@@ -63,6 +63,7 @@
     }
   }
 
+
   /* Navbar container */
 .navbar-c {
     -webkit-appearance:none;
@@ -81,6 +82,8 @@
     padding-top: 12.5px;
     padding-bottom: 11px;
   }
+
+
   .navbar-c a {
     float: right;
     font-size: 15px;
@@ -167,7 +170,7 @@ div .center {
   -webkit-appearance:none;
   display: inline-block;
   text-align:center;
-  outline: dashed 1px black;
+  outline: dashed 2px black;
   position: relative;
   padding: 30px;
 } 
@@ -234,9 +237,49 @@ select {
   position: absolute;
   right: 0;
   bottom: 40px;
+  /* margin-right: 80px; */
 }
 
 #child2 {
   position: absolute;
   left: 0;
 }
+
+@media (max-width: 1250px) {
+  #child1 {
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    margin-right: 285px;
+  }
+
+}
+
+#comment-table {
+  margin-top: 40px;
+}
+
+#update-issue {
+  margin-top: 60px;
+}
+
+
+.login {
+  -webkit-appearance:none;
+  display: inline-block;
+  text-align:center;
+  outline: dashed 2px black;
+  padding: 50px;
+  position: absolute;
+  width: 600px;
+  height: 300px;
+  top: 50%;
+  margin-top: -150px;
+  left: 50%;
+  margin-left: -300px;
+} 
+
+.loginbutton {
+  position: relative;
+  margin-left: 115px;
+} 

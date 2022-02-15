@@ -15,7 +15,6 @@ def register(request):
         f = CustomUserCreationForm(request.POST)
         if f.is_valid():
             f.save()
-            messages.success(request, 'Account created successfully')
         
             return redirect('register')
     
@@ -36,7 +35,6 @@ def createIssue(request):
             f = IssueForm(current_user, project_id, request.POST)
             if f.is_valid():
                 f.save()
-                messages.success(request, 'Issue created successfully')
                 return redirect('/%s/' % project_id)
         else: 
             f = IssueForm(current_user, project_id)
@@ -64,7 +62,6 @@ def createProject(request):
             f = ProjectForm(request.POST)
             if f.is_valid():
                 f.save()
-                messages.success(request, 'Project created successfully')
                 return redirect('base')
         else:
             f = ProjectForm() 
@@ -117,7 +114,7 @@ def project(request, project_id):
     return render(request, 'core/project.html', {'bugs': bugs, 'information': information, 'workers': workers, 'project': project, 'form': f})
 
 def issue(request, issue_id):
-    project_id = request.session['project']
+    # project_id = request.session['project']
     current_user = request.user.id
     bug = Issue.objects.get(id=issue_id)
 
@@ -146,7 +143,6 @@ def issue(request, issue_id):
             f = UpdateIssueForm(issue_id, request.POST)
             if f.is_valid():
                 f.save()
-                messages.success(request, 'Issue updated successfully')
                 return redirect('/%s/details' % issue_id)
         else:
             f = UpdateIssueForm(issue_id)
